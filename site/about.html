@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>w0ts / Multitone</title>
+<meta name="description" content="Multitone: a shared multi-boot kernel and data rule for Digitone II firmwares (design, not built).">
+<link rel="stylesheet" href="https://w0ts.github.io/site-style/common.css">
+<style>
+/* the accent as Wishes sets it (the teal of the Digitone II's FUNC button) */
+:root { --accent: #67d0ca; --accent-text-l: #247570; --accent-text-d: #67d0ca; }
+/* fallbacks, in case the shared stylesheet does not load */
+body { margin: 0; background: var(--bg, #000); color: var(--text, #d6d6d6); font: 14px/20px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+main { max-width: 900px; margin: 0 auto; padding: 16px 16px 32px; }
+nav.top { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+nav.top .spacer { flex: 1; }
+.mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+/* the page's own boxes */
+.box { background: var(--s1, #0f0f12); border: 1px solid var(--line, #26262c); margin: 0 0 12px; padding: 0 0 12px; }
+.box > * { margin-left: 12px; margin-right: 12px; }
+.box h2 { margin: 0 0 8px; padding: 3px 12px; min-height: 24px; background: var(--s2, #1c1c20); box-shadow: inset 0 -3px var(--accent);
+  font-size: 13px; font-weight: 400; text-transform: uppercase; color: var(--fg, #f2f2f2); }
+.box p, .box ol, .box ul { margin-top: 0; margin-bottom: 8px; }
+.box pre { overflow-x: auto; font-size: 13px; }
+.status { border-left: 3px solid var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <nav class="top" aria-label="w0ts / Multitone"><a href="about.html" aria-current="page">about</a><span class="spacer"></span><a href="https://github.com/w0ts/multitone">github.com/w0ts/multitone</a></nav>
+  <h1>w0ts / Multitone</h1>
+  <p class="sub">A shared way for several Digitone II firmwares to live on one unit and share its +Drive. Design, not built.</p>
+
+  <section class="box">
+    <h2>What it is</h2>
+    <p>Two things that firmwares can share:</p>
+    <ol>
+      <li>a small boot kernel that can start a firmware kept on the +Drive instead of the one in flash, and fall back to a safe one when that fails;</li>
+      <li>one shared rule for where each firmware keeps its extra data, how a firmware is named, and how a project made with another firmware is recognised and shown to the user.</li>
+    </ol>
+  </section>
+
+  <section class="box">
+    <h2>How it works</h2>
+    <p>Every firmware carries an identity, <span class="mono">brand . name . version</span> (for example <span class="mono">Elektron . DN2 . 1.12</span>, <span class="mono">w0ts . Wishes . 0.69.6</span>), and a list of the projects it opens, <span class="mono">brand . name . min . max</span>. A project records which firmware saved it; another firmware opens it only when that identity is on its list, and otherwise says which firmware made it.</p>
+    <p>Stock addresses come from one checked table per stock OS version; on a version without a table the kernel switches itself off and the firmware boots as usual. The first table is 1.12.</p>
+  </section>
+
+  <section class="box">
+    <h2>Adopting it</h2>
+    <p>Planned, not built yet:</p>
+    <ol>
+      <li>add this repository to the firmware as a git submodule;</li>
+      <li>run the build glue that places the kernel and fills the firmware's identity, open list and ranges;</li>
+      <li>take a line in the registry by pull request;</li>
+      <li>build against the address table of the firmware's stock version.</li>
+    </ol>
+  </section>
+
+  <section class="box">
+    <h2>The registry</h2>
+    <p>One line per firmware: number, 4-letter id, brand, name, its block of machine-type numbers, its +Drive ranges and its RAM ranges. A new line may overlap no other, so two firmwares never write the same place or give one machine-type number to two engines. The file is <span class="mono">registry/firmwares.txt</span> (a proposal; first entries: Elektron DN2 stock, w0ts Wishes).</p>
+  </section>
+
+  <section class="box status">
+    <h2>Status</h2>
+    <p><b>Design, not built.</b> Nothing has run on a unit or in an emulator. The licence is not chosen yet, so there is no licence file. Unofficial: not made or supported by Elektron.</p>
+  </section>
+</main>
+</body>
+</html>

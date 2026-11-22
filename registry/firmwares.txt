@@ -1,0 +1,26 @@
+# Multitone firmware registry (PROPOSAL, not agreed; see docs/design.md 2.1-2.3)
+#
+# One line per firmware, assigned first-come by pull request, never reused.
+# Fields are separated by " | ":
+#   number          u16, 1..0x3FFF; 0 = stock (never a firmware's own section)
+#   id              4 ASCII letters (shown in the directory and logs)
+#   brand           as in the identity (spec/identity.md)
+#   name            as in the identity
+#   machine types   the block of machine-type numbers the firmware may give its engines (types up to 62)
+#   +Drive ranges   sector ranges, inclusive, hex
+#   RAM ranges      byte address ranges, start inclusive .. end exclusive, hex
+#
+# A new line must overlap no other line (machine types, +Drive, RAM). A member's build checks its own
+# declared ranges and types against its line.
+#
+# number | id   | brand    | name   | machine types | +Drive ranges                                    | RAM ranges
+0        | STOK | Elektron | DN2    | 0..17         | 0x000000..0x5D7FFF (slot store, factory buffer) | stock BSS, read per stock version (ends at 0x466b74d0 on 1.11, 0x466b84d0 on 1.12)
+3        | WISH | w0ts     | Wishes | 50..62        | 0x5D8000..0x5FFDFF (less the kernel's part)      | 0x4670c000..0x47800000 (less the kernel's windows)
+#
+# Notes
+# - Numbers 1 (MBK1, the kernel itself) and 2 (DPAT, upstream dn2mk2) are held for the lines sketched in
+#   docs/design.md 2.1; they are not entered until agreed. The kernel's proposed part: +Drive 0x5FFE00..0x5FFFFF
+#   plus the image store, RAM 0x476F8000..0x47700000 and 0x47800000..0x47FFFFFF.
+# - Wishes uses 50..55 today; 50..62 is the proposed block.
+# - The ranges come from docs/design.md 2.1/2.3 (Wishes' docs/memory-map.md, v0.69.2). TBD: the stock
+#   machine-type count, and the exact BSS bounds per stock version.
